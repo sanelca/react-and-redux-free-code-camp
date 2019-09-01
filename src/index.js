@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { render } from 'react-dom';
-
-
+import { createStore } from 'redux';
+import { Provider } from 'react-redux'
 //Getting Started with React Redux
 class DisplayMessages extends React.Component {
   // change code below this line
@@ -87,4 +87,87 @@ let store = {
 };
 
 
-ReactDOM.render(<DisplayMessages2 />, document.getElementById('root'))
+//Use Provider to Connect Redux to React
+const ADD2 = 'ADD';
+
+const addMessage2 = (message) => {
+  return {
+    type: ADD2,
+    message
+  }
+};
+
+const messageReducer2 = (state = [], action) => {
+  switch (action.type) {
+    case ADD2:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+
+
+const store2 = createStore(messageReducer2);
+
+// React Code:
+
+class DisplayMessages3 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      messages: []
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  submitMessage() {
+    const currentMessage = this.state.input;
+    this.setState({
+      input: '',
+      messages: this.state.messages.concat(currentMessage)
+    });
+  }
+  render() {
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {this.state.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+};
+
+class AppWrapper extends React.Component {
+  // render the Provider here
+  render() {
+    return (
+      <Provider store = {store2}>
+        <DisplayMessages3 />
+      </Provider>
+    )
+  }
+  // change code above this line
+};
+
+ReactDOM.render(<AppWrapper />, document.getElementById('root'))

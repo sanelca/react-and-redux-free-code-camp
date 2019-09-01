@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { render } from 'react-dom';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 //Getting Started with React Redux
 class DisplayMessages extends React.Component {
   // change code below this line
@@ -199,4 +199,39 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-ReactDOM.render(<AppWrapper />, document.getElementById('root'))
+
+//Connect Redux to React
+const addMessage4 = (message) => {
+  return {
+    type: 'ADD',
+    message: message
+  }
+};
+
+const mapStateToProps2 = (state) => {
+  return {
+    messages: state
+  }
+};
+
+const mapDispatchToProps2 = (dispatch) => {
+  return {
+    submitNewMessage: (message) => {
+      dispatch(addMessage(message));
+    }
+  }
+};
+
+class Presentational extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return <h3>This is a Presentational Component</h3>
+  }
+};
+
+// change code below this line
+const ConnectedComponent = connect(mapStateToProps2, mapDispatchToProps2)(Presentational)
+
+ReactDOM.render(<Presentational />, document.getElementById('root'))

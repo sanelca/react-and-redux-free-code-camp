@@ -337,4 +337,100 @@ class AppWrapper5 extends React.Component {
   }
 };
 
-ReactDOM.render(<Presentational2 />, document.getElementById('root'))
+
+//Extract Local State into Redux
+// Redux:
+const ADD6 = 'ADD';
+
+const addMessage6 = (message) => {
+  return {
+    type: ADD6,
+    message: message
+  }
+};
+
+const messageReducer6 = (state = [], action) => {
+  switch (action.type) {
+    case ADD6:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+const store6 = createStore(messageReducer6);
+
+// React:
+
+// Change code below this line
+class Presentational3 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  submitMessage() {
+      this.props.submitNewMessage(this.state.input);
+    this.setState({
+      input: ''
+    });
+
+  }
+  render() {
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {this.props.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+};
+// Change code above this line
+
+const mapStateToProps6 = (state) => {
+  return {messages: state}
+};
+
+const mapDispatchToProps6 = (dispatch) => {
+  return {
+    submitNewMessage: (message) => {
+      dispatch(addMessage(message))
+    }
+  }
+};
+
+const Container6 = connect(mapStateToProps6, mapDispatchToProps6)(Presentational3);
+
+class AppWrapper6 extends React.Component {
+  render() {
+    return (
+      <Provider store={store6}>
+        <Container6/>
+      </Provider>
+    );
+  }
+};
+
+ReactDOM.render(<AppWrapper6 />, document.getElementById('root'))

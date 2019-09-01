@@ -181,4 +181,22 @@ const mapStateToProps = (state) => {
   }
 }
 
+
+//Map Dispatch to Props
+const addMessage3 = (message) => {
+  return {
+    type: 'ADD',
+    message: message
+  }
+};
+
+// change code below this line
+const mapDispatchToProps = (dispatch) => {
+  return {
+    submitNewMessage: function(message) {
+        dispatch(addMessage(message));
+    }
+  }
+};
+
 ReactDOM.render(<AppWrapper />, document.getElementById('root'))

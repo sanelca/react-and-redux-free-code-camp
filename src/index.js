@@ -234,4 +234,107 @@ class Presentational extends React.Component {
 // change code below this line
 const ConnectedComponent = connect(mapStateToProps2, mapDispatchToProps2)(Presentational)
 
-ReactDOM.render(<Presentational />, document.getElementById('root'))
+
+
+
+//Connect Redux to the Messages App
+// Redux:
+const ADD5 = 'ADD';
+
+const addMessage5 = (message) => {
+  return {
+    type: ADD5,
+    message: message
+  }
+};
+
+const messageReducer5 = (state = [], action) => {
+  switch (action.type) {
+    case ADD5:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+const store5 = createStore(messageReducer5);
+
+// React:
+class Presentational2 extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      messages: []
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  submitMessage() {
+    const currentMessage = this.state.input;
+    this.setState({
+      input: '',
+      messages: this.state.messages.concat(currentMessage)
+    });
+  }
+  render() {
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+        <button onClick={this.submitMessage}>Submit</button>
+        <ul>
+          {this.state.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+};
+
+// React-Redux:
+const mapStateToProps5 = (state) => {
+  return { messages: state }
+};
+
+const mapDispatchToProps5 = (dispatch) => {
+  return {
+    submitNewMessage: (newMessage) => {
+       dispatch(addMessage(newMessage))
+    }
+  }
+};
+
+
+// define the Container component here:
+const Container = connect(mapStateToProps5, mapDispatchToProps5)(Presentational2);
+
+class AppWrapper5 extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    // complete the return statement:
+    return (
+      <Provider store={store5}>
+       <Container/>
+      </Provider>
+      );
+  }
+};
+
+ReactDOM.render(<Presentational2 />, document.getElementById('root'))
